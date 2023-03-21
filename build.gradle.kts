@@ -16,7 +16,7 @@ plugins {
     id("nebula.javadoc-jar") version "18.4.0"
     id("nebula.source-jar") version "18.4.0"
 }
-
+ 
 apply(plugin = "nebula.publish-verification")
 
 configure<nebula.plugin.release.git.base.ReleasePluginExtension> {
@@ -30,8 +30,8 @@ java {
 }
 
 // Set as appropriate for your organization
-group = "com.yourorg"
-description = "Rewrite recipes."
+group = "com.apgsga"
+description = "Rewrite recipes for VKVP migrations"
 
 repositories {
     mavenLocal()
@@ -66,6 +66,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:latest.release")
     testImplementation("org.junit.jupiter:junit-jupiter-params:latest.release")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:latest.release")
+    testImplementation("com.google.guava:guava:latest.release")
 
     testImplementation("org.openrewrite:rewrite-test")
     testImplementation("org.assertj:assertj-core:latest.release")
@@ -98,11 +99,3 @@ configure<PublishingExtension> {
     }
 }
 
-publishing {
-  repositories {
-      maven {
-          name = "moderne"
-          url = uri("https://us-west1-maven.pkg.dev/moderne-dev/moderne-recipe")
-      }
-  }
-}

@@ -67,7 +67,7 @@ public class NoGuavaListsNewArrayList extends Recipe {
                     .imports("java.util.ArrayList")
                     .build();
 
-            private final JavaTemplate newArrayListIterable = JavaTemplate.builder(this::getCursor, "new ArrayList<>(#{any(java.lang.Iterable)})")
+            private final JavaTemplate newArrayListIterable = JavaTemplate.builder(this::getCursor, "new ArrayList<>(#{any(java.util.Collection)})")
                     .imports("java.util.ArrayList")
                     .build();
 
