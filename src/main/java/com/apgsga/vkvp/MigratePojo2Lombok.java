@@ -1,10 +1,9 @@
 package com.apgsga.vkvp;
 
 import java.time.Duration;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
+
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.java.AnnotationMatcher;
@@ -16,26 +15,21 @@ import org.openrewrite.java.tree.J.Annotation;
 import org.openrewrite.java.tree.J.VariableDeclarations.NamedVariable;
 import org.openrewrite.java.tree.JavaType;
 
-public class MigratePojoLombok extends Recipe {
+public class MigratePojo2Lombok extends Recipe {
 
     @Override
     public String getDisplayName() {
-        return "Test Recipe, which removes all methods of a Class";
+        return "Ro Object Lombok Migration";
     }
 
     @Override
     public String getDescription() {
-        return "Only for testing and learning purposes.";
-    }
-
-    @Override
-    public Set<String> getTags() {
-        return Collections.singleton("RSPEC-1144");
+        return "This Recipe migrates Report Object of VKVP to Lombok based Data Objects";
     }
 
     @Override
     public Duration getEstimatedEffortPerOccurrence() {
-        return Duration.ofMinutes(5);
+        return Duration.ofMinutes(1);
     }
 
     @Override

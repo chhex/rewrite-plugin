@@ -5,15 +5,15 @@ import org.openrewrite.java.JavaParser;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 
-import com.apgsga.vkvp.MigratePojoLombok;
+import com.apgsga.vkvp.MigratePojo2Lombok;
 
 import static org.openrewrite.java.Assertions.java;
 
-class MigratePojoLombokTests implements RewriteTest {
+class MigratePojo2LombokTests implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        spec.recipe(new MigratePojoLombok())
+        spec.recipe(new MigratePojo2Lombok())
                 .parser(JavaParser.fromJavaVersion().classpath(""));
     }
 
