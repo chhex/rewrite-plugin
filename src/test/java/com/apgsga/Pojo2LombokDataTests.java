@@ -5,15 +5,16 @@ import org.openrewrite.java.JavaParser;
 import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 
-import com.apgsga.vkvp.MigratePojo2Lombok;
+import com.apgsga.vkvp.mig.Pojo2LombokData;
+import com.apgsga.vkvp.mig.Pojo2LombokValue;
 
 import static org.openrewrite.java.Assertions.java;
 
-class MigratePojo2LombokTests implements RewriteTest {
+class Pojo2LombokDataTests implements RewriteTest {
 
     @Override
     public void defaults(RecipeSpec spec) {
-        spec.recipe(new MigratePojo2Lombok())
+        spec.recipe(new Pojo2LombokData())
                 .parser(JavaParser.fromJavaVersion().classpath(""));
     }
 
@@ -48,10 +49,11 @@ class MigratePojo2LombokTests implements RewriteTest {
     }
 
     @Test
-    void removeUnusedPrivateMethods() {
+    void removeSettersAndGetters() {
         rewriteRun(
                 java(
                         """
+                                package ro; 
                                 class RoTest {
 
                                     private Long testLong;
@@ -76,6 +78,8 @@ class MigratePojo2LombokTests implements RewriteTest {
                                 }
                                 """,
                         """
+                                package ro; 
+
                                 import lombok.Data;
 
                                 @Data
@@ -101,6 +105,7 @@ class MigratePojo2LombokTests implements RewriteTest {
         rewriteRun(
                 java(
                         """
+                                package ro; 
                                 class RoTest {
 
                                     private Long testLong;
@@ -127,6 +132,8 @@ class MigratePojo2LombokTests implements RewriteTest {
                                 }
                                 """,
                         """
+                                package ro; 
+
                                 import lombok.Data;
 
                                 @Data
@@ -135,10 +142,6 @@ class MigratePojo2LombokTests implements RewriteTest {
                                     private Long testLong;
 
                                     private boolean isSet;
-
-                                    public boolean isSet() {
-                                        return isSet;
-                                    }
                                 }
                                 """));
     }
@@ -148,6 +151,7 @@ class MigratePojo2LombokTests implements RewriteTest {
         rewriteRun(
                 java(
                         """
+                                package ro; 
                                 public class RoWerbemittelbedarf {
                                     private String produktformat;
 
@@ -212,6 +216,8 @@ class MigratePojo2LombokTests implements RewriteTest {
                                 }
                                 """,
                                 """
+                                package ro; 
+
                                 import lombok.Data;
 
                                 @Data
@@ -227,10 +233,6 @@ class MigratePojo2LombokTests implements RewriteTest {
                                     }
 
                                     private boolean isSet;
-
-                                    public boolean isSet() {
-                                      return this.isSet;
-                                    }
                                 }
                                 """));
     }

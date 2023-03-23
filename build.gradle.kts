@@ -3,7 +3,7 @@ import nebula.plugin.contacts.ContactsExtension
 
 plugins {
     `java-library`
-
+    id("com.apgsga.common.repo")
     id("nebula.release") version "16.0.0"
 
     id("nebula.maven-manifest") version "18.4.0"
@@ -18,6 +18,9 @@ plugins {
 }
  
 apply(plugin = "nebula.publish-verification")
+apply(plugin =  "maven-publish")
+apply(plugin =  "com.apgsga.common.repo")
+
 
 configure<nebula.plugin.release.git.base.ReleasePluginExtension> {
     defaultVersionStrategy = nebula.plugin.release.NetflixOssStrategies.SNAPSHOT(project)
@@ -30,8 +33,9 @@ java {
 }
 
 // Set as appropriate for your organization
-group = "com.apgsga"
+group = "com.apgsga.rewrite.recipes"
 description = "Rewrite recipes for VKVP migrations"
+version = "0.14" 
 
 repositories {
     mavenLocal()
@@ -86,16 +90,39 @@ tasks.named<JavaCompile>("compileJava") {
 }
 
 configure<ContactsExtension> {
-    val j = Contact("team@moderne.io")
-    j.moniker("Team Moderne")
-    people["team@moderne.io"] = j
+    val j = Contact("julien.helbling@apgsga.ch")
+    j.moniker("Framework Team Apg")
+    people["julien.helbling@apgsga.ch"] = j
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
 }
 
 configure<PublishingExtension> {
     publications {
-        named("nebula", MavenPublication::class.java) {
-            suppressPomMetadataWarningsFor("runtimeElements")
-        }
+        repositories {
+			maven {
+				name = "releases"
+			}
+		}
+        publications {
+			create<MavenPublication>("mavenJava") {
+				from(components["java"])
+			    versionMapping {
+                    usage("java-api") {
+                        fromResolutionOf("runtimeClasspath")
+                    }   
+                usage("java-runtime") {
+                        fromResolutionResult()
+                    }
+                }
+                suppressPomMetadataWarningsFor("runtimeElements")
+			}
+		}
     }
+
+
 }
 

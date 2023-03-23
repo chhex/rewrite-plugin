@@ -1,4 +1,4 @@
-package com.apgsga.vkvp;
+package com.apgsga.vkvp.mig;
 
 import java.time.Duration;
 import java.util.Comparator;
@@ -15,21 +15,21 @@ import org.openrewrite.java.tree.J.Annotation;
 import org.openrewrite.java.tree.J.VariableDeclarations.NamedVariable;
 import org.openrewrite.java.tree.JavaType;
 
-public class MigratePojo2Lombok extends Recipe {
+public class Pojo2LombokData extends Recipe {
 
     @Override
     public String getDisplayName() {
-        return "Ro Object Lombok Migration";
+        return "Pojo to Lombok Data Migration";
     }
 
     @Override
     public String getDescription() {
-        return "This Recipe migrates Report Object of VKVP to Lombok based Data Objects";
+        return "This Recipe migrates Pojo Classes (Ro ) of VKVP to Lombok Data Classes, \n It removes setters and getters for attributes and add's the Lombok Annotation @Data.";
     }
 
     @Override
     public Duration getEstimatedEffortPerOccurrence() {
-        return Duration.ofMinutes(1);
+        return Duration.ofMinutes(3);
     }
 
     @Override
@@ -40,9 +40,8 @@ public class MigratePojo2Lombok extends Recipe {
             public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl,
                     ExecutionContext executionContext) {
                 J.ClassDeclaration cd = super.visitClassDeclaration(classDecl, executionContext);
-                String simpleClassName = cd.getSimpleName();
                 List<Annotation> allAnnotations = cd.getAllAnnotations();
-                if (simpleClassName.startsWith("Ro")
+                if (isSelectedClass(cd) 
                         && allAnnotations.stream().noneMatch(new AnnotationMatcher("@lombok.Data")::matches)) {
                     JavaTemplate template = JavaTemplate.builder(this::getCursor, "@Data")
                             .imports("lombok.Data")
@@ -70,11 +69,11 @@ public class MigratePojo2Lombok extends Recipe {
                     if (classDeclaration == null) {
                         return m;
                     }
-                    String simpleClassName = classDeclaration.getSimpleName();
-                    if (!simpleClassName.startsWith("Ro"))
+                    if (!isSelectedClass(classDeclaration))
                         return m;
 
-                    if (!(simpleMethodName.startsWith("get") || simpleMethodName.startsWith("set") || simpleMethodName.startsWith("isSet_")))
+                    if (!(simpleMethodName.startsWith("get") || simpleMethodName.startsWith("set")
+                            || simpleMethodName.startsWith("isSet")))
                         return m;
 
                     return null;
@@ -82,27 +81,36 @@ public class MigratePojo2Lombok extends Recipe {
 
                 return m;
             }
+
             @Override
-            public J.VariableDeclarations visitVariableDeclarations(J.VariableDeclarations multiVariable, ExecutionContext executionContext) {
+            public J.VariableDeclarations visitVariableDeclarations(J.VariableDeclarations multiVariable,
+                    ExecutionContext executionContext) {
 
                 List<NamedVariable> variables = multiVariable.getVariables();
-                if (variables.size() == 1 && variables.get(0).getSimpleName().startsWith("isSet_") ) {
+                if (variables.size() == 1 && variables.get(0).getSimpleName().startsWith("isSet_")) {
                     return null;
                 }
                 return super.visitVariableDeclarations(multiVariable, executionContext);
             }
-    
+
             @Override
-            public J.VariableDeclarations.NamedVariable visitVariable(J.VariableDeclarations.NamedVariable variable, ExecutionContext executionContext) {
+            public J.VariableDeclarations.NamedVariable visitVariable(J.VariableDeclarations.NamedVariable variable,
+                    ExecutionContext executionContext) {
                 if (variable.getSimpleName().startsWith("isSet_")) {
                     return null;
                 }
                 return super.visitVariable(variable, executionContext);
             }
-        };
- 
-    
-    }
 
+            private boolean isSelectedClass(J.ClassDeclaration cd) {
+               String packageName =  cd.getType().getPackageName(); 
+               if ((packageName.endsWith(".ro") || packageName.equals("ro")) && cd.getSimpleName().startsWith("Ro")) return true;
+               return false; 
+
+            }
+                
+        };
+
+    }
 
 }
