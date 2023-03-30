@@ -35,7 +35,7 @@ java {
 // Set as appropriate for your organization
 group = "com.apgsga.rewrite.recipes"
 description = "Rewrite recipes for VKVP migrations"
-version = "0.14" 
+version = "0.15" 
 
 repositories {
     mavenLocal()

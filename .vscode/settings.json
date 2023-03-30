@@ -1,5 +1,6 @@
 {
     "java.compile.nullAnalysis.mode": "automatic",
     "java.import.gradle.java.home": "/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home",
-    "java.import.gradle.user.home": "/Users/che/gradlehomes/current"
+    "java.import.gradle.user.home": "/Users/che/gradlehomes/current",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
